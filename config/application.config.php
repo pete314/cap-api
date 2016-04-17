@@ -1,7 +1,8 @@
 <?php
 return array(
     'modules' => array(
-        'Common'
+        'Common',
+        'User'
     ),
     'module_listener_options' => array(
         'config_glob_paths'    => array(
