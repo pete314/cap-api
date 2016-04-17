@@ -1,2 +1,3 @@
-# cap-api
-The Rest API  for Crawler project 
+CAP-API - A wrapper for the CAP crawling project
+================================================
+

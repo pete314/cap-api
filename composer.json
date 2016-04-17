@@ -1,0 +1,17 @@
+{
+    "name": "CAP_API",
+    "description": "The wrapper for CAP Crawling project",
+    "homepage": "https://peternagy.ie/cap",
+    "repositories": [
+        {
+            "type": "composer",
+            "url": "https://packages.zendframework.com/"
+        }
+    ],
+    "require": {
+        "php": ">=5.5",
+        "zendframework/zendframework": "^2.5",
+        "phpunit/phpunit": "4.*",
+        "zendframework/zend-diactoros": "^1.3"
+    }
+}
