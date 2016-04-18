@@ -14,7 +14,7 @@
  * @description Static value filter - Does what it stands for
  */
 
-namespace Common\Filter;
+namespace Common\Filters;
 
 class StaticValueFilter{
     
@@ -43,10 +43,12 @@ class StaticValueFilter{
      * @param String array $filters
      */
     public static function filterArrayValues(&$arrData, $filters = ['StringTrim']){
+        $result =[];
         foreach($arrData as $key => $value){
             foreach($filters as $filter){
-                $arrData[$key]  = self::filterSingle($arrData[$key], $filter);
+                $result[$key]  = self::filterSingle($arrData[$key], $filter);
             }
         }
+        return $result;
     }
 }

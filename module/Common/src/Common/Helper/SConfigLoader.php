@@ -21,7 +21,9 @@ use Zend\Config\Config;
 class SConfigLoader{
     protected static $config;
     protected static $configFiles = [
-        'phpsettings' => '/config/autoload/phpsetting.global.php'
+        'phpsettings'   => '/config/autoload/phpsetting.global.php',
+        'cassaconf'     => '/config/autoload/cassa.conf.local.php',
+        'mailconfig'    => '/config/autoload/mail.conf.local.php',
     ];
     protected static $configurations = [];
     
@@ -29,7 +31,8 @@ class SConfigLoader{
         if(!self::$config){
             foreach(self::$configFiles as $configName => $filePath){
                 self::$config = new Config(include getcwd() . $filePath);
-                self::$configurations[$configName] = self::$config->$configName; 
+                $conf = self::$config->toArray();
+                self::$configurations[$configName] = $conf[$configName];
             }
         }
     }
@@ -39,7 +42,7 @@ class SConfigLoader{
         if(array_key_exists($configName, self::$configurations)){
             return self::$configurations[$configName];
         }else{
-            throw new Exception('Config is not loaded, or does not exist', '404', "SConfigLoader::getConfig($configName)");
+            throw new \Exception('Config is not loaded, or does not exist', '404', "SConfigLoader::getConfig($configName)");
         }
     }
 } 

@@ -21,7 +21,7 @@ return array(
                 'options' => array(
                     'route' => '/api/user/login',
                     'defaults' => array(
-                        'controller' => 'User\Controller\Login'
+                        'controller' => 'User\Controller\User'
                     ),
                 ),
             ),
@@ -29,7 +29,7 @@ return array(
     ),
     'controllers' => array(
         'invokables' => array(
-            'User\Controller\Login' => 'User\Controller\LoginController',
+            'User\Controller\User' => 'User\Controller\UserController',
         )
     )
 );

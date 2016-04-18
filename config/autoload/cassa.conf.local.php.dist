@@ -1,0 +1,31 @@
+<?php
+
+
+/** 
+ * ===============================================================
+ * Copyright (C) 2016 - Peter Nagy.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * ===============================================================
+ * @author      Peter Nagy
+ * @since       Jan 2016
+ * @version     0.1
+ * @description Cassandra connection configuration
+
+REMOVE DIST ENDING IN ORDER TO LOAD THIS CONFIG
+ */
+
+return [
+    'cassaconf' => [
+        'contactPoints' => ['localhost'],
+        'contactPort' => 9042,
+        'password' => '',
+        'username' => '',
+        'clientCertFile' => '',
+        'trustedCertFiles' => [],
+        'privateKeyFile' => '',
+        'privateKeyPass' => ''
+    ]
+];

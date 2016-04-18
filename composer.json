@@ -12,6 +12,8 @@
         "php": ">=5.5",
         "zendframework/zendframework": "^2.5",
         "phpunit/phpunit": "4.*",
-        "zendframework/zend-diactoros": "^1.3"
+        "zendframework/zend-diactoros": "^1.3",
+        "duoshuo/php-cassandra": "dev-master",
+	"phpmailer/phpmailer": "~5.2"
     }
 }

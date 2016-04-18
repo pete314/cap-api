@@ -17,9 +17,9 @@
 namespace User\Controller;
 
 use Common\AControllers\AARestfulController;
-use User\Helper\LoginHelper;
+use User\Helper\UserHelper;
 
-class LoginController extends AARestfulController{
+class UserController extends AARestfulController{
     
     protected $createRequestKeys = [
       'password', 'email'  
@@ -30,7 +30,7 @@ class LoginController extends AARestfulController{
      * @param type $data
      */
     public function create($data) {
-        $loginHelper = new LoginHelper();
+        $loginHelper = new UserHelper();
         return $loginHelper->routeCreateUserRequest($data, $this->response);
     }
 }
