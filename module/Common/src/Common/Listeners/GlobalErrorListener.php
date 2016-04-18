@@ -116,10 +116,14 @@ class GlobalErrorListener extends AbstractListenerAggregate {
             case 'error-controller-invalid':
             default:
                 $status = \Zend\Http\Response::STATUS_CODE_400;
-                $errors = 'Request error - Please check you request';
+                $errors = 'Request error - Please check you request' . $error;
                 break;
         }
-
+        
+        /**Check moudles loaded
+        $manager = $e->getApplication()->getServiceManager()->get('ModuleManager');
+        $modules = $manager->getLoadedModules();
+        */
         $response = $e->getResponse();
         $response->getHeaders()->addHeaders([
             'Date: ' => gmdate('D, d M Y H:i:s T'),

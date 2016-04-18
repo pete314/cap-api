@@ -17,11 +17,21 @@
 namespace User\Controller;
 
 use Common\AControllers\AARestfulController;
+use User\Helper\LoginHelper;
 
 class LoginController extends AARestfulController{
     
-    public function get($id) {
-        return new JsonModel(['success' => true, 'errors' => null]);
+    protected $createRequestKeys = [
+      'password', 'email'  
+    ];
+    
+    /**
+     * Route the user creation request
+     * @param type $data
+     */
+    public function create($data) {
+        $loginHelper = new LoginHelper();
+        return $loginHelper->routeCreateUserRequest($data, $this->response);
     }
 }
 

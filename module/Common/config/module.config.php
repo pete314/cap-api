@@ -16,8 +16,8 @@
 return array(
     'service_manager' => array(
         'invokables' => array(
-            'Common\Listeners\ApiErrorListener' => 'Common\Listeners\ApiErrorListener',
-            'Common\Listeners\OAuthListener'    => 'Common\Listeners\OAuthListener',
+            'Common\Listeners\GlobalErrorListener' => 'Common\Listeners\GlobalErrorListener',
+            //'Common\Listeners\OAuthListener'    => 'Common\Listeners\OAuthListener',
         )
     )
 );

@@ -21,14 +21,14 @@ use Zend\Config\Config;
 class SConfigLoader{
     protected static $config;
     protected static $configFiles = [
-        'phpsettings' => 'config/autoload/storage.client.local.php'
+        'phpsettings' => '/config/autoload/phpsetting.global.php'
     ];
     protected static $configurations = [];
     
     private static function initConfig(){
         if(!self::$config){
             foreach(self::$configFiles as $configName => $filePath){
-                self::$config = new Config(include $filePath);
+                self::$config = new Config(include getcwd() . $filePath);
                 self::$configurations[$configName] = self::$config->$configName; 
             }
         }

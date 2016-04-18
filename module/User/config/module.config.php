@@ -14,10 +14,22 @@
  * @description User module config
  */
 return array(
-    'service_manager' => array(
+    'router' => array(
+        'routes' => array(
+            'login' => array(
+                'type' => 'Zend\Mvc\Router\Http\Segment',
+                'options' => array(
+                    'route' => '/api/user/login',
+                    'defaults' => array(
+                        'controller' => 'User\Controller\Login'
+                    ),
+                ),
+            ),
+        ),
+    ),
+    'controllers' => array(
         'invokables' => array(
-            'Common\Listeners\ApiErrorListener' => 'Common\Listeners\ApiErrorListener',
-            'Common\Listeners\OAuthListener'    => 'Common\Listeners\OAuthListener',
+            'User\Controller\Login' => 'User\Controller\LoginController',
         )
     )
 );

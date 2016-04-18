@@ -22,7 +22,7 @@ use Zend\Http\Request as HttpRequest;
 use Zend\Json\Json;
 use Zend\Stdlib\RequestInterface as Request;
 use Zend\Stdlib\ResponseInterface as Response;
-
+use Zend\Mvc\Controller\AbstractController;
 
 
 abstract class AARestfulController extends AbstractController {
