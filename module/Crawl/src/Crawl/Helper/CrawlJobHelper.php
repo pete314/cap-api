@@ -20,94 +20,132 @@ use Common\Helper\AbstractDataHelper;
 
 class CrawlJobHelper extends AbstractDataHelper {
     
+    protected static $validTypes = [
+        'job_type' => ['link-crawl', 'content-crawl'],
+        'startin_params' => ['site-root', 'start-at-page', 'xpath', 'content-match', 'max-depth'],
+        'has_depth' => ['N/A'],
+        'recurrance' => ['daily', 'weekly', 'hourly']
+    ];
+    
     /**
-     * Get user secret
-     * 
-     * @param string $user_id
-     * @param array $data - ['email', 'password']
-     * @param HTTP\Response $response
-     * @return HTTP\Response 
+     * Negative validate request data
+     * @param array $rawData
+     * @return array
      */
-    public function routeUpdateRequest($user_id, $data, $response){
-        $user_model = new \User\Model\UserModel();
-        $secFilter = $user_model->getSecretRequestFilters();
-        $secFilter->setData($data);
-        
-        if($secFilter->isValid() 
-                && \Common\Crypto\SCryptoWrapper::generateUserId($data['email']) == $user_id){
-            $filteredData = $secFilter->getValues();
-            
-            $filteredData['user_id'] = \Common\Crypto\SCryptoWrapper::generateUserId($filteredData['email']);
-            $result = $user_model->getUser($filteredData['user_id']);
-            
-            if($result->count() == 1 && \Common\Crypto\SCryptoWrapper::verifyPassword($filteredData['password'], $result[0]['password'])){
-                $this->generateResponse($response, 200, 
-                ['success' => true, 
-                    'data' => 
-                        ['public_key'=>$result[0]['public_key'],
-                            'private_key'=>$result[0]['private_key']
-                        ], 
-                    'errors' => null]);
-            }else{
-                $this->generateResponse($response, 404, ['success' => false, 'data' => [], 'errors' => 'User not found or wrong password']);
+    protected static function validateRequestData(&$rawData){
+        $result= ['result' => []];
+        foreach($rawData as $key => $value){
+            switch($key){
+                case 'job_type':
+                    if(!in_array($value, self::$validTypes[$key])){ 
+                        $result['result'][] = self::serializeError($key, sprintf('Invalid value: %s for %s', $value, $key));
+                    }
+                    break;
+                case 'startin_params':
+                    if(!is_array($value) || count($value) < 2){
+                        $result['result'][] = self::serializeError($key, 'site-root & start-at-page is required for all requests');
+                    }else{
+                        $res = self::validateStatinPrams($value);
+                        if(count($res) > 0){
+                            $result['result'][] = $res;
+                        }
+                    }
+                    break;
+                case 'has_depth':
+                    //not in scope at the moment alway N/A
+                    break;
+                case 'recurrance':
+                    $valueBits = explode(':', $value);
+                    if(!is_array($valueBits)
+                            || count($valueBits) != 2
+                            || !in_array($valueBits[0], self::$validTypes[$key])
+                            || !is_numeric($valueBits[1])
+                            || ($valueBits[0] == 'daily' && ($valueBits[1] < 0 || $valueBits[1] > 24))
+                            || ($valueBits[0] == 'weekly' && ($valueBits[1] < 0 || $valueBits[1] > 7))
+                            || ($valueBits[0] == 'hourly' && ($valueBits[1] < 0 || $valueBits[1] > 60))){ 
+                        
+                        $result['result'][] = self::serializeError($key, sprintf('Invalid value: %s for %s', $value, $key));
+                    }
+                    break;
+                default:
+                    $result['result'][] = self::serializeError($key, 'Invalid property');
             }
-        }else{
-            $this->generateResponse($response, 400, ['success' => false, 'data' => [], 'errors' => $secFilter->getMessages()]);
         }
-        return $response;
+        
+        return $result;
     }
     
     /**
-     * Create user
+     * Validate startin_params request params (with negative validation!)
+     * @param array $params
+     * @return array
+     */
+    protected static function validateStatinPrams(array $params){
+        $result =[];
+        foreach($params as $param){
+            $valueBits = explode(':', $param, 2);
+            if(is_array($valueBits) 
+                    && count($valueBits) == 2
+                    && in_array($valueBits[0], self::$validTypes['startin_params'])
+                    && strlen($valueBits[1]) > 0){
+                if($valueBits[0] == 'site-root' || $valueBits[0] == 'start-at-page'){
+                    $res = \Common\Validators\StaticGeneralValidator::validateValue('Uri', $valueBits);
+                    if(isset($res['errors'])){
+                        $result[] = $res;
+                    }
+                }else if($valueBits[0] == 'max-depth'){
+                    if(!is_numeric($valueBits[1]) 
+                            || $valueBits[1] > 4 || $valueBits[1] < 1){
+                        $result[] = self::serializeError($param, 'max-depth has to be between 1 and 4 inclusive'); 
+                            }
+                }
+
+                //@todo: regex validate Xpath 
+            }else{
+                $result[] = self::serializeError($param, 'Invalid property');
+            }
+        }
+        return $result;
+    }
+    
+    protected static function serializeError(&$key, $msg){
+        return [$key => $msg];
+    }
+    
+    /**
+     * Create crawling job
      * @param array $data
      * @param HTTP|Response $response
      * @return HTTP|Response
      */
-    public function routeCreateUserRequest($data, $response) {
-        $user_model = new \User\Model\UserModel();
-        $regFilter = $user_model->getRegisterInputFilter();
-        $regFilter->setData($data);
+    public function routeCreateJobRequest($user_id, $data, $response) {
+        $validationResult = self::validateRequestData($data);
         
-        if($regFilter->isValid()){
-            $filteredData = $regFilter->getValues();
-            
-            $filteredData['user_id'] = \Common\Crypto\SCryptoWrapper::generateUserId($filteredData['email']);
-            $result = $user_model->getUser($filteredData['user_id']);
-            
-            if($result->count() == 0){
-                $filteredData['password'] = \Common\Crypto\SCryptoWrapper::generatePasswordHash($filteredData['password']);
-                $filteredData['public_key'] = \Common\Crypto\SCryptoWrapper::generatePublicKey();
-                $filteredData['private_key'] = \Common\Crypto\SCryptoWrapper::generatePrivateKey();
-                $filteredData['user_id'] = \Common\Crypto\SCryptoWrapper::generateUserId($filteredData['email']);
-
-                //Returns Cassandra\Rows 
-                $result = $user_model->createUser($filteredData);
-                if($result->count() == 1){
-                    \Common\Factories\EmailFactory::sendWelcomeEmail(
-                            $filteredData['email'], 
-                            sprintf('%s %s', $filteredData['first_name'], $filteredData['last_name']),
-                            'Welcome to CAP api', 
-                            ['user_id' => $filteredData['user_id'], 
-                             'public_key' => $filteredData['public_key'],
-                             'private_key' => $filteredData['private_key']]
-                            );
-                    $this->generateResponse($response, 200, [
-                        'success' => true, 
-                        'data' => [
-                            'user_id' => $filteredData['user_id'], 
-                            'public_key' => $filteredData['public_key'],
-                            'private_key' => $filteredData['private_key']
-                            ], 
-                        'errors' => $regFilter->getMessages()]);
-                }
+        $user_model = new \User\Model\UserModel();
+        $userArr = $user_model->getUser($user_id);
+        if(count($validationResult['result']) == 0 && $userArr->count() == 1){
+            $craw_job_model = new \Crawl\Model\CrawlJobModelModel();
+            $jobId = bin2hex(openssl_random_pseudo_bytes(24)) . time();
+            if(1 == $craw_job_model->createJob([
+                'job_id' => $jobId,
+                'user_id' => $userArr[0]['user_id'],
+                'job_type' => $data['job_type'], 
+                'startin_params' => implode(',', $data['startin_params']),
+                'recurrance' => $data['recurrance']])){
+                
+                $this->generateResponse($response, 200, 
+                                        ['success' => true, 
+                                            'data' => ['job_id' => $jobId], 
+                                            'errors' => null]);
             }else{
-                $this->generateResponse($response, 200, [
-                        'success' => false, 
-                        'data' => [], 
-                        'errors' => 'User already exists']);
+                $this->generateResponse($response, 500, 
+                                        ['success' => false, 
+                                            'data' => [], 
+                                            'errors' => 'Internal error - please try again later']);
             }
         }else{
-            $this->generateResponse($response, 400, ['success' => false, 'data' => [], 'errors' => $regFilter->getMessages()]);
+            $this->generateResponse($response, 400, ['success' => false, 'data' => [], 
+                'errors' => count($validationResult['result']) == 0 ? 'User not found' : $validationResult['result']]);
         }
         return $response;
     }

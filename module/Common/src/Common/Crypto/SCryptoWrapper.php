@@ -33,11 +33,11 @@ class SCryptoWrapper{
     }
     
     public static function generatePublicKey(){
-        return md5(uniqid() . \Zend\Math\Rand::getString(64));
+        return md5(uniqid() . \Zend\Math\Rand::getString(64, null, true));
     }
     
     public static function generatePrivateKey(){
-        return hash('sha256', (uniqid() . \Zend\Math\Rand::getString(128)));
+        return hash('sha256', (uniqid() . \Zend\Math\Rand::getString(128, null, true)));
     }
     
     public static function calculatePayloadHmac(&$private_key, &$payload, $diggest){

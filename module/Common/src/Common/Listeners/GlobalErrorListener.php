@@ -60,7 +60,8 @@ class GlobalErrorListener extends AbstractListenerAggregate {
         }
 
         $model = new JsonModel(array(
-            'result' => false,
+            'success' => false,
+            'data' => [],
             'errors' => 'Internal Error'
         ));
         $model->setTerminal(true);
@@ -117,7 +118,7 @@ class GlobalErrorListener extends AbstractListenerAggregate {
             case 'error-controller-invalid':
             default:
                 $status = \Zend\Http\Response::STATUS_CODE_400;
-                $errors = 'Request error - Please check you request' . $error;
+                $errors = 'Request error - Please check you request';
                 break;
         }
         
@@ -131,7 +132,7 @@ class GlobalErrorListener extends AbstractListenerAggregate {
             'Content-Type' => 'application/json; charset=UTF-8'
         ]);
         $response->setStatusCode($status);
-        $response->setContent(\Zend\Json\Json::encode(['result' => false, 'errors' => $errors]));
+        $response->setContent(\Zend\Json\Json::encode(['success' => false, 'data' => [], 'errors' => $errors]));
         $response->sendHeaders();
 
         $e->stopPropagation();
@@ -157,7 +158,7 @@ class GlobalErrorListener extends AbstractListenerAggregate {
             'Content-Type' => 'application/json; charset=UTF-8'
         ]);
         $response->setStatusCode(500);
-        $response->setContent(\Zend\Json\Json::encode(['result' => false, 'errors' => 'Internal Error']));
+        $response->setContent(\Zend\Json\Json::encode(['success' => false, 'data' => [], 'errors' => 'Internal Error']));
         $response->sendHeaders();
 
         $e->stopPropagation();
@@ -166,13 +167,13 @@ class GlobalErrorListener extends AbstractListenerAggregate {
 
     public static function writeExceptionLog($exception) {
         try {
-            $logger = new Logger;
-//stream writer         
+            $logger = new Logger;       
             $writerStream = new Stream('data/logs/' . date('Ymd') . '-api-exception.log');
             $logger->addWriter($writerStream);
             $logger->crit($exception);
         } catch (\Exception $e) {
-            
+            //The place of no return :(, as this was already an exception
+            //will be cought by the error_handler
         }
     }
 

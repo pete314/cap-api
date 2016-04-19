@@ -33,8 +33,10 @@ class StaticGeneralValidator{
                 break;
             case 'StringLength':
                 //options = ['min' => 3, 'max' => 30]
-                $validator = new Zend\Validator\StringLength($options);
+                $validator = new \Zend\Validator\StringLength($options);
                 break;
+            case 'Uri':
+                $validator = new \Zend\Validator\Uri(['allowRelative' => false]);
             default:
                 return ['value' => $value, 'errors' => null];
         }

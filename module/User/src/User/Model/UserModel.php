@@ -69,7 +69,7 @@ class UserModel extends AbsctractCassandraAdapter {
      * @return type
      */
     public function getUserByPublicKey($p_key){
-        $query = "select * from %s.%s where public_key='%s'";
+        $query = "select * from %s.%s where public_key='%s' ALLOW FILTERING";
         return parent::$session->execute(new \Cassandra\SimpleStatement(sprintf($query, self::$column_family, self::$table_name, $p_key)));
     }
 

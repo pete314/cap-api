@@ -38,7 +38,7 @@ class RequestLogModel extends AbsctractCassandraAdapter {
 
         $options = new \Cassandra\ExecutionOptions([
             'arguments' => [
-                uniqid("", true), $data['redirect_url'], $data['remote_addr'], $data['request_path'],
+                uniqid(rand(), true), $data['redirect_url'], $data['remote_addr'], $data['request_path'],
                 $data['request_auth']
             ]
         ]);

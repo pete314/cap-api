@@ -81,11 +81,12 @@ class AuthListener extends AbstractListenerAggregate {
         }
         
         $authTokens = $event->getRequest()->getHeaders('authorization')->getFieldValue();
-        $authType = substr($authTokens, 0, 6);
-        $keys = explode(':', substr($authTokens, 6));
-
+        $authType = trim(substr($authTokens, 0, 6));
+        $keys = explode(':', substr($authTokens, 7));//remove the CAPMAC_
+        
         if ($authType == "CAPMAC" && count($keys) == 2 && strlen($keys[0]) == 32) {
             $result = (new \User\Model\UserModel())->getUserByPublicKey($keys[0]);
+            
             if($result && $result->count() == 1){
                 $content = $event->getRequest()->getContent();
                 if (empty($content)) {
@@ -94,7 +95,6 @@ class AuthListener extends AbstractListenerAggregate {
                 }
                 return \Common\Crypto\SCryptoWrapper::calculatePayloadHmac($result[0]['private_key'], $content, $keys[1]);
             }
-            
         }
 
         return false;
@@ -109,7 +109,7 @@ class AuthListener extends AbstractListenerAggregate {
             'Date' => gmdate('D, d M Y H:i:s T'),
             'Content-Type' => 'application/json; charset=UTF-8'
         ]);
-        $response->setContent(\Zend\Json\Json::encode(['result' => false, 'errors' => 'Request quthorization failed, check keys/payload']));
+        $response->setContent(\Zend\Json\Json::encode(['success' => false, 'data' => false, 'errors' => 'Request quthorization failed, check keys/payload']));
         $response->getHeaders()->addHeaderLine('Content-Type', 'application/json');
         $response->setStatusCode(405);
     }
@@ -122,9 +122,9 @@ class AuthListener extends AbstractListenerAggregate {
         $request = $event->getRequest();
         
         $requestData = [];
-        $requestData['redirect_url'] =  null == $request->getServer('REDIRECT_URL') ? $request->getServer('REDIRECT_URL') : "No URL";
-        $requestData['remote_addr']  =  null == $request->getServer('REMOTE_ADDR') ? $request->getServer('REMOTE_ADDR') : "No IP";
-        $requestData['request_path'] =  null == $request->getUri()->getPath() ? $request->getUri()->getPath() : "No Path";
+        $requestData['redirect_url'] =  null != $request->getServer('REDIRECT_URL') ? $request->getServer('REDIRECT_URL') : "No URL";
+        $requestData['remote_addr']  =  null != $request->getServer('REMOTE_ADDR') ? $request->getServer('REMOTE_ADDR') : "No IP";
+        $requestData['request_path'] =  null != $request->getUri()->getPath() ? $request->getUri()->getPath() : "No Path";
         $requestData['request_auth'] =  $request->getHeaders('authorization') ? $request->getHeaders('authorization')->getFieldValue() : "No Auth";
         
         if(!self::$requestLogModel){

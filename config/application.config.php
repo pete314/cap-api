@@ -2,6 +2,7 @@
 return array(
     'modules' => array(
         'Common',
+        'Crawl',
         'User'
     ),
     'module_listener_options' => array(

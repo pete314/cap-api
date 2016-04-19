@@ -16,7 +16,7 @@
 return array(
     'router' => array(
         'routes' => array(
-            'login' => array(
+            'crawl-job' => array(
                 'type' => 'Zend\Mvc\Router\Http\Segment',
                 'options' => array(
                     'route' => '/api/crawl/job[/:actiion[/:id]]',//action is default mapping to an *Action(), don't want that

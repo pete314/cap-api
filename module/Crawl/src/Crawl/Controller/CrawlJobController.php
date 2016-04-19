@@ -17,20 +17,21 @@
 namespace Crawl\Controller;
 
 use Common\AControllers\AARestfulController;
-use User\Helper\UserHelper;
+use Crawl\Helper\CrawlJobHelper;
 
 /**
  * Reolves to the endpoint: /api/crawl/job/*
  */
-class UserController extends AARestfulController{
-    
-    protected $createRequestKeys = [
-      'password', 'email', 'first_name', 'last_name'  
-    ];
+class CrawlJobController extends AARestfulController{
     
     protected $updateRequestKeys = [
-        'password', 'email'
+        'job_type', 'stratin_params', 'has_depth', 'recurrance'
     ];
+    
+    protected $createRequestKeys = [
+        
+    ];
+    
     /**
      * Route the key release request
      * @param type $id
@@ -38,13 +39,12 @@ class UserController extends AARestfulController{
      */
     public function update($id, $data) {
         $action = $this->params('actiion');
-        if(!empty($id) &&
-                $action != 'secret'
-                && false === \Common\Validators\StaticGeneralValidator::validateKeysValues($data, $this->createRequestKeys)){
+        if($action != 'register'
+                && \Common\Validators\StaticGeneralValidator::validateKeysValues($data, $this->updateRequestKeys)){
             return $this->customJsonResponse();
         }else{
-            $userHelper = new UserHelper();
-            return $userHelper->routeUpdateRequest($id, $data, $this->response);
+            $crawlJobHelper = new CrawlJobHelper();
+            return $crawlJobHelper->routeCreateJobRequest($id, $data, $this->response);
         }
     }
     
@@ -54,12 +54,13 @@ class UserController extends AARestfulController{
      */
     public function create($data) {
         $action = $this->params('actiion');
+        $user_id = $this->params('id');
         if($action != 'register'
                 && \Common\Validators\StaticGeneralValidator::validateKeysValues($data, $this->createRequestKeys)){
             return $this->customJsonResponse();
         }else{
-            $userHelper = new UserHelper();
-            return $userHelper->routeCreateUserRequest($data, $this->response);
+            $crawlJobHelper = new CrawlJobHelper();
+            return $crawlJobHelper->routeCreateJobRequest($user_id, $data, $this->response);
         }
     }
 }
