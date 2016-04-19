@@ -22,16 +22,42 @@ use User\Helper\UserHelper;
 class UserController extends AARestfulController{
     
     protected $createRequestKeys = [
-      'password', 'email'  
+      'password', 'email', 'first_name', 'last_name'  
     ];
+    
+    protected $updateRequestKeys = [
+        'password', 'email'
+    ];
+    /**
+     * Route the key release request
+     * @param type $id
+     * @param type $data
+     */
+    public function update($id, $data) {
+        $action = $this->params('actiion');
+        if(!empty($id) &&
+                $action != 'secret'
+                && false === \Common\Validators\StaticGeneralValidator::validateKeysValues($data, $this->createRequestKeys)){
+            return $this->customJsonResponse();
+        }else{
+            $userHelper = new UserHelper();
+            return $userHelper->routeUpdateRequest($id, $data, $this->response);
+        }
+    }
     
     /**
      * Route the user creation request
      * @param type $data
      */
     public function create($data) {
-        $loginHelper = new UserHelper();
-        return $loginHelper->routeCreateUserRequest($data, $this->response);
+        $action = $this->params('actiion');
+        if($action != 'register'
+                && \Common\Validators\StaticGeneralValidator::validateKeysValues($data, $this->createRequestKeys)){
+            return $this->customJsonResponse();
+        }else{
+            $userHelper = new UserHelper();
+            return $userHelper->routeCreateUserRequest($data, $this->response);
+        }
     }
 }
 

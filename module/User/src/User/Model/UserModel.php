@@ -181,4 +181,69 @@ class UserModel extends AbsctractCassandraAdapter {
         
         return $inputFilter;
     }
+    
+    /**
+     * Return a configured input filter to be able to validate and
+     * filter the data.
+     * 
+     * @return InputFilter
+     */
+    public function getSecretRequestFilters(){
+        $inputFilter = new \Zend\InputFilter\InputFilter();
+        $factory = new InputFactory();
+        
+        /*
+         * email
+         * password
+         * first_name
+         * surname
+         */
+        // Email field filter
+        $inputFilter->add($factory->createInput(array(
+            'name'      => 'email',
+            'required'  => true,
+            'filters'   => array(
+                array('name' => 'StripTags'),
+                array('name' => 'StringTrim'),
+            ),
+            'validators' => array(
+                array(
+                    'name' => 'NotEmpty',
+                ),
+                array(
+                    'name' => 'StringLength',
+                    'options' => array(
+                        'min' => 6,
+                        'max' => 254
+                    ),
+                ),
+                array(
+                    'name' => 'EmailAddress',
+                ),
+            ),
+        )));
+        
+        // password field feilter
+        $inputFilter->add($factory->createInput(array(
+            'name'      => 'password',
+            'required'  => true,
+            'filters'   => array(
+                array('name' => 'StringTrim'),
+            ),
+            'validators' => array(
+                array(
+                    'name' => 'NotEmpty',
+                ),
+                array(
+                    'name' => 'StringLength',
+                    'options' => array(
+                        'min' => 1,
+                        'max' => 25
+                    ),
+                )
+            ),
+        )));
+        
+        return $inputFilter;
+    }
 }

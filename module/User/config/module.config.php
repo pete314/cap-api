@@ -19,7 +19,11 @@ return array(
             'login' => array(
                 'type' => 'Zend\Mvc\Router\Http\Segment',
                 'options' => array(
-                    'route' => '/api/user/login',
+                    'route' => '/api/user[/:actiion[/:id]]',//action is default mapping to an *Action(), don't want that
+                    'constraints' => [
+                        'actiion' => '[a-zA-Z][a-zA-Z0-9_-]+',
+                        'id'      => '[a-f0-9]{32}'
+                    ],
                     'defaults' => array(
                         'controller' => 'User\Controller\User'
                     ),
