@@ -11,16 +11,16 @@
  * @author      Peter Nagy
  * @since       Jan 2016
  * @version     0.1
- * @description User controller - handles crawl endpoint requests 
+ * @description CrawlJob controller - handles the request for crawl jobs
  */
 
-namespace User\Controller;
+namespace Crawl\Controller;
 
 use Common\AControllers\AARestfulController;
 use User\Helper\UserHelper;
 
 /**
- * Reolves to the endpoint: /api/user/*
+ * Reolves to the endpoint: /api/crawl/job/*
  */
 class UserController extends AARestfulController{
     

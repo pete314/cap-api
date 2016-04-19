@@ -11,12 +11,9 @@
  * @author      Peter Nagy
  * @since       Jan 2016
  * @version     0.1
- * @description Module.php - Common mondule loader
+ * @description Module.php - Crawl mondule loader
  */
-namespace Common;
-
-use Zend\Mvc\MvcEvent;
-use Common\Helper\SConfigLoader;
+namespace Crawl;
 
 class Module{
 
@@ -42,25 +39,5 @@ class Module{
                 ),
             ),
         );
-    }
-
-    /**
-     * Attaches the ApiErrorListener on the render event
-     *
-     * @param MvcEvent $e
-     */
-    public function onBootstrap($e) {
-        $phpSettings = SConfigLoader::getConfig('phpsettings');
-        if($phpSettings) {
-            foreach($phpSettings as $key => $value) {
-                ini_set($key, $value);
-            }
-        }
-        
-        $app = $e->getTarget();
-        $services = $app->getServiceManager();
-        $events = $app->getEventManager();
-        $events->attach($services->get('Common\Listeners\GlobalErrorListener'));
-        $events->attach($services->get('Common\Listeners\AuthListener'));
     }
 }

@@ -34,8 +34,8 @@ class UserModel extends AbsctractCassandraAdapter {
     }
 
     public function createUser($data) {
-        $query = 'insert into %s.%s (user_id, email, password, first_name, last_name, public_key, private_key) '
-                . 'values(?, ?, ?, ?, ?, ?, ?)';
+        $query = 'insert into %s.%s (user_id, email, password, first_name, last_name, public_key, private_key, created) '
+                . 'values(?, ?, ?, ?, ?, ?, ?, toTimestamp(now()))';
 
         $statement = parent::$session->prepare(sprintf($query, self::$column_family, self::$table_name));
 
@@ -61,6 +61,16 @@ class UserModel extends AbsctractCassandraAdapter {
     public function getUser($id = '') {
         $query = "select * from %s.%s where user_id='%s'";
         return parent::$session->execute(new \Cassandra\SimpleStatement(sprintf($query, self::$column_family, self::$table_name, $id)));
+    }
+    
+    /**
+     * Get the user by public key, 
+     * @param string $p_key
+     * @return type
+     */
+    public function getUserByPublicKey($p_key){
+        $query = "select * from %s.%s where public_key='%s'";
+        return parent::$session->execute(new \Cassandra\SimpleStatement(sprintf($query, self::$column_family, self::$table_name, $p_key)));
     }
 
     /**

@@ -31,6 +31,7 @@ class GlobalErrorListener extends AbstractListenerAggregate {
      * @return void
      */
     public function attach(EventManagerInterface $events) {
+        //@todo: this could be removed as the error handlers/error_handler catches all
         $this->listeners[] = $events->attach(MvcEvent::EVENT_RENDER, __CLASS__ . '::onRender', 1000);
         //handle the dispatch error (exception) 
         $this->listeners[] = $events->attach(MvcEvent::EVENT_DISPATCH_ERROR, __CLASS__ . '::onDispatchError', 1001);
@@ -53,7 +54,7 @@ class GlobalErrorListener extends AbstractListenerAggregate {
         $viewModel = $e->getResult();
         $exception = $viewModel->getVariable('exception');
 
-//write log about exception
+        //write log about exception
         if (isset($exception)) {
             self::writeExceptionLog($exception);
         }
@@ -77,7 +78,7 @@ class GlobalErrorListener extends AbstractListenerAggregate {
     public static function onDispatchError($e) {
         $exception = $e->getParam('exception');
 
-//write log about exception
+        //write log about exception
         if (isset($exception)) {
             self::writeExceptionLog($exception);
         }
@@ -94,18 +95,18 @@ class GlobalErrorListener extends AbstractListenerAggregate {
         $request = $e->getRequest();
         $headers = $request->getHeaders();
         if (!$headers->has('Accept')) {
-// nothing to do; can't determine what we can accept 
+        // nothing to do; can't determine what we can accept 
             return;
         }
 
         $accept = $headers->get('Accept');
         if (!$accept->match('application/json')) {
-// nothing to do; does not match JSON 
+        // nothing to do; does not match JSON 
             return;
         }
 
         $status = \Zend\Http\Response::STATUS_CODE_200;
-//Exchange error to human readable messages
+        //Exchange error to human readable messages
         switch ($error) {
             case 'error-router-no-match':
                 $status = \Zend\Http\Response::STATUS_CODE_404;

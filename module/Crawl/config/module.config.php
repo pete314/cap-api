@@ -11,21 +11,21 @@
  * @author      Peter Nagy
  * @since       Jan 2016
  * @version     0.1
- * @description User module config
+ * @description Crawl - Crawl module config
  */
 return array(
     'router' => array(
         'routes' => array(
-            'user-general' => array(
+            'login' => array(
                 'type' => 'Zend\Mvc\Router\Http\Segment',
                 'options' => array(
-                    'route' => '/api/user[/:actiion[/:id]]',//action is default mapping to an *Action(), don't want that
+                    'route' => '/api/crawl/job[/:actiion[/:id]]',//action is default mapping to an *Action(), don't want that
                     'constraints' => [
                         'actiion' => '[a-zA-Z][a-zA-Z0-9_-]+',
                         'id'      => '[a-f0-9]{32}'
                     ],
                     'defaults' => array(
-                        'controller' => 'User\Controller\User'
+                        'controller' => 'Crawl\Controller\CrawlJob'
                     ),
                 ),
             ),
@@ -33,8 +33,7 @@ return array(
     ),
     'controllers' => array(
         'invokables' => array(
-            'User\Controller\User' => 'User\Controller\UserController',
+            'Crawl\Controller\CrawlJob' => 'Crawl\Controller\CrawlJobController',
         )
     )
 );
-

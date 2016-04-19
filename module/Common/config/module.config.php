@@ -17,7 +17,7 @@ return array(
     'service_manager' => array(
         'invokables' => array(
             'Common\Listeners\GlobalErrorListener' => 'Common\Listeners\GlobalErrorListener',
-            //'Common\Listeners\OAuthListener'    => 'Common\Listeners\OAuthListener',
+            'Common\Listeners\AuthListener'    => 'Common\Listeners\AuthListener',
         )
     )
 );
