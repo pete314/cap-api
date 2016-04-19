@@ -149,5 +149,54 @@ class CrawlJobHelper extends AbstractDataHelper {
         }
         return $response;
     }
+    
+    /**
+     * Router for get sinlge job report
+     * @param string $user_id
+     * @param string $job_id
+     * @param HTTP\Response $response
+     * @return HTTP\Response
+     */
+    public function routeGetJobReportRequest($user_id, $job_id, $response){
+        $craw_job_model = new \Crawl\Model\CrawlJobModelModel();
+        $user_model = new \User\Model\UserModel();
+        
+        $userArr = $user_model->getUser($user_id);
+        $crawJobArr = $craw_job_model->getJobById($job_id);
+        if($crawJobArr->count() == 1 
+                && $userArr->count() == 1
+                && $crawJobArr[0]['user_id'] == $userArr[0]['user_id']){
+            $this->generateResponse($response, 200, ['success' => true, 'data' => $crawJobArr[0], 
+                'errors' => null]);
+        }else{
+            $this->generateResponse($response, 404, ['success' => false, 'data' => [], 
+                'errors' => 'User or job not found']);
+        }
+        return $response;
+    }
+    
+    
+    public function routeGetAllJobReportRequest($user_id, $response){
+        $craw_job_model = new \Crawl\Model\CrawlJobModelModel();
+        $user_model = new \User\Model\UserModel();
+        
+        $userArr = $user_model->getUser($user_id);
+        $crawJobArr = $craw_job_model->getJobByUserId($user_id);
+        if($crawJobArr->count() >= 1 
+                && $userArr->count() == 1
+                && $crawJobArr[0]['user_id'] == $userArr[0]['user_id']){
+            $results = [];
+            foreach($crawJobArr as $job){
+                $results[$job['job_id']] = $job;
+            }
+            unset($crawJobArr);
+            $this->generateResponse($response, 200, ['success' => true, 'data' => $results, 
+                'errors' => null]);
+        }else{
+            $this->generateResponse($response, 404, ['success' => false, 'data' => [], 
+                'errors' => 'User or job not found']);
+        }
+        return $response;
+    }
 
 }

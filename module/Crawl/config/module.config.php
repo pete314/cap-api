@@ -19,10 +19,11 @@ return array(
             'crawl-job' => array(
                 'type' => 'Zend\Mvc\Router\Http\Segment',
                 'options' => array(
-                    'route' => '/api/crawl/job[/:actiion[/:id]]',//action is default mapping to an *Action(), don't want that
+                    'route' => '/api/crawl/job[/:actiion[/:id[/:jobid]]]',//action is default mapping to an *Action(), don't want that
                     'constraints' => [
                         'actiion' => '[a-zA-Z][a-zA-Z0-9_-]+',
-                        'id'      => '[a-f0-9]{32}'
+                        'id'      => '[a-f0-9]{32}',
+                        'jobid'      => '[a-f0-9]+',
                     ],
                     'defaults' => array(
                         'controller' => 'Crawl\Controller\CrawlJob'

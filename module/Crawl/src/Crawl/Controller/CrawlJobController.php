@@ -33,6 +33,26 @@ class CrawlJobController extends AARestfulController{
     ];
     
     /**
+     * Get single job report
+     * @param string $id 
+     * @return type
+     */
+    public function get($id) {
+        $action = $this->params('actiion');
+        $job_id = $this->params('jobid');
+        if($action == 'report' && empty($job_id)){
+            $crawlJobHelper = new CrawlJobHelper();
+            return $crawlJobHelper->routeGetAllJobReportRequest($id, $this->response);
+        }else if($action != 'report' && !empty($job_id)){
+            $crawlJobHelper = new CrawlJobHelper();
+            return $crawlJobHelper->routeGetJobReportRequest($id, $job_id, $this->response);
+        }else{
+            return $this->customJsonResponse();
+        }
+    }
+    
+    
+    /**
      * Route the key release request
      * @param type $id
      * @param type $data
