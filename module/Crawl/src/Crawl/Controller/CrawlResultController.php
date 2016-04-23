@@ -43,7 +43,7 @@ class CrawlResultController extends AARestfulController{
         $action = $this->params('actiion');
         $job_id = $this->params('jobid');
         
-        if(($action == 'json' || $action == 'csv') && strlen($job_id) >= 30){
+        if(($action == 'json' || $action == 'csv' || $action == 'content-zip') && strlen($job_id) >= 30){
             $crawlResultHelper = new CrawlResultHelper();
             return $crawlResultHelper->routeGetJobResultRequest($id, $job_id, $action, $this->response);
         }else{

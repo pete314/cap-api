@@ -13,7 +13,9 @@ create index on CapData.crawl_job (user_id);
 --Create keyspace for crawl dump
 create keyspace CrawlDump with replication = {'class': 'SimpleStrategy', 'replication_factor' : 1};
 use CrawlDump;
+--Create tables for crawl dump with extra indexes to avoid filtering
 create table crawl_dump (url_hash text primary key, content blob, crawler_job text, created timestamp, scrape_type text, url text);
+create index on CrawlDump.crawl_dump (crawler_job);
 create table crawled_links(url_hash text primary key, crawler_job text, created timestamp, url text);
 alter table crawled_links add status varchar;
 alter table crawled_links add message varchar;

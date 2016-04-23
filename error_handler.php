@@ -69,13 +69,14 @@ function handler($errno, $errstr, $errfile, $errline)
     }
      
     $message = " Error PHP in file : ".$errfile." at line : ".$errline."
-    with type error : ".$typestr." : ".$errstr." in ". (php_sapi_name() == 'cli') ? 'cli' : $_SERVER['REQUEST_URI'];
- 
+    with type error : ".$typestr." : ".$errstr." in ". php_sapi_name() == 'cli' ? 'cli' : $_SERVER['REQUEST_URI'];
+    
     if(!($errno & ERROR_REPORTING)) {
         return;
     }
  
     if (DISPLAY_ERRORS) {
+        
         if($typestr == 'E_ERROR' || $typestr == 'E_PARSE' || $typestr == 'E_CORE_ERROR' || $typestr == 'E_COMPILE_ERROR'){
             //logging...
             $logger = new \Zend\Log\Logger;         
@@ -84,8 +85,8 @@ function handler($errno, $errstr, $errfile, $errline)
             $logger->crit($message);
             //UNCOMMENT FOR ERROR EMAILING
     //        $mail = new \Zend\Mail\Message();
-    //        $mail->setFrom('system@crosssec.com', 'Crosssec API');
-    //        $mail->addTo('admin@crosssec.com', 'Crosssec Admin');
+    //        $mail->setFrom('your@mail.ie', 'Sender Name');
+    //        $mail->addTo('admin@mail.ie', 'Receiver Name');
     //        $transport = new \Zend\Mail\Transport\Sendmail(); 
     //        $writerMail = new \Zend\Log\Writer\mail($mail, $transport);
     //        $writerMail->setSubjectPrependText("PHP Error :  $typestr : $errstr ");
