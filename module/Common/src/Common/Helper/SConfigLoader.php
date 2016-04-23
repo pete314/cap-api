@@ -24,6 +24,7 @@ class SConfigLoader{
         'phpsettings'   => '/config/autoload/phpsetting.global.php',
         'cassaconf'     => '/config/autoload/cassa.conf.local.php',
         'mailconfig'    => '/config/autoload/mail.conf.local.php',
+        'caprunner'     => '/config/autoload/cap.conf.local.php'
     ];
     protected static $configurations = [];
     
@@ -37,6 +38,13 @@ class SConfigLoader{
         }
     }
     
+    /**
+     * Get config by name, will try to match root array key name in config
+     * 
+     * @param type $configName
+     * @return type
+     * @throws \Exception
+     */
     public static function getConfig($configName){
         self::initConfig();
         if(array_key_exists($configName, self::$configurations)){

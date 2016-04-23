@@ -1,0 +1,21 @@
+<?php
+
+/** 
+ * ===============================================================
+ * Copyright (C) 2016 - Peter Nagy.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * ===============================================================
+ * @author      Peter Nagy
+ * @since       Jan 2016
+ * @version     0.1
+ * @description Cap config - holds the python cli startin configurations
+ */
+
+return [
+    'caprunner' => [
+        'cap_path' => '/path/to/repository/cap-crawler/crawler/cap_runner.py'
+    ]
+];

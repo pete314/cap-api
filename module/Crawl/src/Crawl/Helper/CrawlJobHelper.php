@@ -27,6 +27,8 @@ class CrawlJobHelper extends AbstractDataHelper {
         'recurrance' => ['daily', 'weekly', 'hourly']
     ];
     
+    protected static $cap_config;
+    
     /**
      * Negative validate request data
      * @param array $rawData
@@ -133,6 +135,7 @@ class CrawlJobHelper extends AbstractDataHelper {
                 'startin_params' => implode(',', $data['startin_params']),
                 'recurrance' => $data['recurrance']])){
                 
+                $this->startAsyncCrawlJob($jobId);
                 $this->generateResponse($response, 200, 
                                         ['success' => true, 
                                             'data' => ['job_id' => $jobId], 
@@ -148,6 +151,21 @@ class CrawlJobHelper extends AbstractDataHelper {
                 'errors' => count($validationResult['result']) == 0 ? 'User not found' : $validationResult['result']]);
         }
         return $response;
+    }
+    
+    /**
+     * Start async crawljob
+     * 
+     * @param string $job_id
+     */
+    protected function startAsyncCrawlJob($job_id){
+        if(!self::$cap_config){
+            self::$cap_config = \Common\Helper\SConfigLoader::getConfig('caprunner');
+        }
+        $pid = [];
+        //Start the executable python runner script with job id and flush the output, but keep pid if something goes sideways
+        exec(sprintf("%s -j '%s' > /dev/null 2>&1 & echo $!", self::$cap_config['cap_path'], $job_id), $pid);
+        \Common\Helper\SLogWriter::writeLog('job-execution-pid', sprintf("Job id: %s, Process id: %s", $job_id, $pid[0]));
     }
     
     /**

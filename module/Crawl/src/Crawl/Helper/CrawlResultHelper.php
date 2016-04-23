@@ -46,17 +46,20 @@ class CrawlResultHelper extends AbstractDataHelper {
                     $result['link_data'][] = $row + ['gmt' => $row['created']->toDateTime()->format('D, d M Y H:i:s T')];
 
                 }
-                $this->generateResponse($response, 200, ['success' => true, 'data' => $result, 
-                    'errors' => null]);
+                $this->generateResponse($response, 200, 
+                    ['success' => true, 
+                        'data' => $result, 
+                        'errors' => null]);
             }else if($data_type == 'csv'){
                 $result_rows = $crawl_job_result_model->getCrawledLinksByJobId($job_id);
                 //Will be a stream
-                return $this->prepareCsvDownload($result_rows, $data_type, $job_id);
+                return $this->prepareCsvDownload($result_rows, $job_id);
             }else{
                 return $this->prepareContentDownload($job_id);
             }
         }else{
-            $this->generateResponse($response, 404, ['success' => false, 'data' => [], 
+            $this->generateResponse($response, 404, 
+                ['success' => false, 'data' => [], 
                 'errors' => 'User or job not found']);
         }
         return $response;
@@ -92,7 +95,7 @@ class CrawlResultHelper extends AbstractDataHelper {
             }
         }
         
-        //there is nothing to reurn
+        //there is nothing to return
         return (new \Zend\Http\Response\Stream())
                 ->setStatusCode(404)
                 ->setHeaders((new \Zend\Http\Headers())->addHeaders(['Content-Type' => 'application/json']))
