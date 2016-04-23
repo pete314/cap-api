@@ -40,10 +40,11 @@ class CrawlJobController extends AARestfulController{
     public function get($id) {
         $action = $this->params('actiion');
         $job_id = $this->params('jobid');
+        
         if($action == 'report' && empty($job_id)){
             $crawlJobHelper = new CrawlJobHelper();
             return $crawlJobHelper->routeGetAllJobReportRequest($id, $this->response);
-        }else if($action != 'report' && !empty($job_id)){
+        }else if($action == 'report' && strlen($job_id) > 30){
             $crawlJobHelper = new CrawlJobHelper();
             return $crawlJobHelper->routeGetJobReportRequest($id, $job_id, $this->response);
         }else{

@@ -257,7 +257,7 @@ abstract class AARestfulController extends AbstractController {
         }
 
         $request = $e->getRequest();
-
+        
         // Was an "action" requested?
         $action = $routeMatch->getParam('action', false);
         if ($action) {
@@ -536,7 +536,7 @@ abstract class AARestfulController extends AbstractController {
             'Date: ' => gmdate('D, d M Y H:i:s T'),
             'Content-Type' => 'application/json; charset=UTF-8'
         ));
-        $this->response->setContent(\Zend\Json\Json::encode(['result' => false, 'errors' => 'Requested method is not allowed on this endpoint']));
+        $this->response->setContent(\Zend\Json\Json::encode(['success' => false, 'data' => [], 'errors' => 'Requested method is not allowed on this endpoint']));
         return $this->response;
     }
 
@@ -546,7 +546,7 @@ abstract class AARestfulController extends AbstractController {
             'Date' => gmdate('D, d M Y H:i:s T'),
             'Content-Type' => 'application/json; charset=UTF-8'
         ));
-        $this->response->setContent(\Zend\Json\Json::encode(['result' => false, 'errors' => $messages], false, [JSON_UNESCAPED_UNICODE]));
+        $this->response->setContent(\Zend\Json\Json::encode(['success' => false, 'data' => [], 'errors' => $messages], false, [JSON_UNESCAPED_UNICODE]));
         return $this->response;
     }
 

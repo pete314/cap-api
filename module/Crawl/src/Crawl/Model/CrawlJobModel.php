@@ -18,7 +18,7 @@ namespace Crawl\Model;
 
 use Common\Adapters\AbsctractCassandraAdapter;
 
-class CrawlJobModelModel extends AbsctractCassandraAdapter {
+class CrawlJobModel extends AbsctractCassandraAdapter {
 
     private static $table_name = 'crawl_job';
     private static $column_family = 'CapData';

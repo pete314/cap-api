@@ -124,7 +124,7 @@ class CrawlJobHelper extends AbstractDataHelper {
         $user_model = new \User\Model\UserModel();
         $userArr = $user_model->getUser($user_id);
         if(count($validationResult['result']) == 0 && $userArr->count() == 1){
-            $craw_job_model = new \Crawl\Model\CrawlJobModelModel();
+            $craw_job_model = new \Crawl\Model\CrawlJobModel();
             $jobId = bin2hex(openssl_random_pseudo_bytes(24)) . time();
             if(1 == $craw_job_model->createJob([
                 'job_id' => $jobId,
@@ -158,7 +158,7 @@ class CrawlJobHelper extends AbstractDataHelper {
      * @return HTTP\Response
      */
     public function routeGetJobReportRequest($user_id, $job_id, $response){
-        $craw_job_model = new \Crawl\Model\CrawlJobModelModel();
+        $craw_job_model = new \Crawl\Model\CrawlJobModel();
         $user_model = new \User\Model\UserModel();
         
         $userArr = $user_model->getUser($user_id);
@@ -166,7 +166,7 @@ class CrawlJobHelper extends AbstractDataHelper {
         if($crawJobArr->count() == 1 
                 && $userArr->count() == 1
                 && $crawJobArr[0]['user_id'] == $userArr[0]['user_id']){
-            $this->generateResponse($response, 200, ['success' => true, 'data' => $crawJobArr[0], 
+            $this->generateResponse($response, 200, ['success' => true, 'data' => $crawJobArr[0] + ['gmt' => $crawJobArr[0]['created']->toDateTime()->format('D, d M Y H:i:s T')], 
                 'errors' => null]);
         }else{
             $this->generateResponse($response, 404, ['success' => false, 'data' => [], 
@@ -177,7 +177,7 @@ class CrawlJobHelper extends AbstractDataHelper {
     
     
     public function routeGetAllJobReportRequest($user_id, $response){
-        $craw_job_model = new \Crawl\Model\CrawlJobModelModel();
+        $craw_job_model = new \Crawl\Model\CrawlJobModel();
         $user_model = new \User\Model\UserModel();
         
         $userArr = $user_model->getUser($user_id);
@@ -187,7 +187,7 @@ class CrawlJobHelper extends AbstractDataHelper {
                 && $crawJobArr[0]['user_id'] == $userArr[0]['user_id']){
             $results = [];
             foreach($crawJobArr as $job){
-                $results[$job['job_id']] = $job;
+                $results[$job['job_id']] = $job + ['gmt' => $job['created']->toDateTime()->format('D, d M Y H:i:s T')];
             }
             unset($crawJobArr);
             $this->generateResponse($response, 200, ['success' => true, 'data' => $results, 

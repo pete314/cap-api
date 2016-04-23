@@ -30,11 +30,26 @@ return array(
                     ),
                 ),
             ),
+            'crawl-job-result' => array(
+                'type' => 'Zend\Mvc\Router\Http\Segment',
+                'options' => array(
+                    'route' => '/api/crawl/result[/:actiion[/:id[/:jobid]]]',//action is default mapping to an *Action(), don't want that
+                    'constraints' => [
+                        'actiion' => '[a-zA-Z][a-zA-Z0-9_-]+',
+                        'id'      => '[a-f0-9]{32}',
+                        'jobid'      => '[a-f0-9]+',
+                    ],
+                    'defaults' => array(
+                        'controller' => 'Crawl\Controller\CrawlResult'
+                    ),
+                ),
+            ),
         ),
     ),
     'controllers' => array(
         'invokables' => array(
             'Crawl\Controller\CrawlJob' => 'Crawl\Controller\CrawlJobController',
+            'Crawl\Controller\CrawlResult' => 'Crawl\Controller\CrawlResultController',
         )
     )
 );
