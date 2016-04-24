@@ -1,5 +1,7 @@
 /data/logs/
 /data/tmp/
+/output/
+/doc/
 nbproject
 ._*
 .~lock.*

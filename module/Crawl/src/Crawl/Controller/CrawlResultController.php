@@ -50,5 +50,22 @@ class CrawlResultController extends AARestfulController{
             return $this->customJsonResponse();
         }
     }
+    
+    /**
+     * Get last modification time
+     * @param type $id
+     */
+    public function head($id = null) {
+        $action = $this->params('actiion');
+        $job_id = $this->params('jobid');
+        
+        //$job_id > 30 is only for checking if the request is garbage and so save resources
+        if($action == 'head' && strlen($job_id) >= 30){
+            $crawlResultHelper = new CrawlResultHelper();
+            return $crawlResultHelper->routeHEADRequest($id, $job_id, $this->response);
+        }else{
+            return $this->customJsonResponse(); 
+        }
+    }
 }
 

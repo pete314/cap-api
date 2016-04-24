@@ -68,8 +68,10 @@ class CrawlResultHelper extends AbstractDataHelper {
     /**
      * Preapre compressed donwload, currently zip
      * 
+     * @todo: could not get the ZipArchive() to work with php://temp|output 
+     * 
      * @param String $job_id
-     * @return 
+     * @return HTTP\Response (stream)
      */
     protected function prepareContentDownload($job_id){
         $crawl_job_result_model = new \Crawl\Model\CrawlResultModel();
@@ -103,14 +105,14 @@ class CrawlResultHelper extends AbstractDataHelper {
     }
     
     /**
-     * ReadFileContentIntoStream and remove file after
+     * Read File Content Into Stream and remove file after
      * @param string $fileName
      * @return filepointer
      */
     protected function readFileIntoStream($fileName){
         $stream = fopen('php://output','w');
         
-        $filePointerIn =fopen($fileName, "rb");
+        $filePointerIn = fopen($fileName, "rb");
         while (!feof($filePointerIn)) {
             fwrite($stream, fread($filePointerIn, 8192));
             ob_flush();
@@ -164,6 +166,41 @@ class CrawlResultHelper extends AbstractDataHelper {
         ));
         $response->setHeaders($headers);
         
+        return $response;
+    }
+    
+    /**
+     * Return the last modification date for result
+     * 
+     * @param string $user_id
+     * @param string $job_id
+     * @param HTTP\Response $response
+     * @return HTTP\Response
+     */
+    public function routeHEADRequest($user_id, $job_id, $response){
+        $craw_job_model = new \Crawl\Model\CrawlJobModel();
+        $user_model = new \User\Model\UserModel();
+        
+        $userArr = $user_model->getUser($user_id);
+        $crawJobArr = $craw_job_model->getJobById($job_id);
+        if($crawJobArr->count() == 1 
+                && $userArr->count() == 1
+                && $crawJobArr[0]['user_id'] == $userArr[0]['user_id']){
+            
+            if(isset($crawJobArr[0]['finished'])){
+                $updated = $crawJobArr[0]['finished']->toDateTime()->format('D, d M Y H:i:s T');
+            }else if(isset($crawJobArr[0]['started'])){
+                $updated = $crawJobArr[0]['started']->toDateTime()->format('D, d M Y H:i:s T');
+            }else{
+                $updated = $crawJobArr[0]['created']->toDateTime()->format('D, d M Y H:i:s T');
+            }
+            
+            $this->generateCustomResponse($response, 200, [], ['Date' => gmdate('D, d M Y H:i:s T'), 'Last-Modified' => $updated]);
+        }else{
+            $this->generateResponse($response, 404, 
+                ['success' => false, 'data' => [], 
+                'errors' => 'User or job not found']);
+        }
         return $response;
     }
 }
