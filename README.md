@@ -170,13 +170,11 @@ Note: the status code is set based on the error in the above case '403 - Forbidd
 
 Notes
 -----
-
-**PUT/POST/GET/HEAD** HTTP methods are available on some endpoints.<br/>
-**Hmac digest** is calculated on the payload, which is either the body of the request or the path if body is not available(GET|HEAD). The path is only used to make scaling on multiple hosts easier, so the subdomain or different IP does not make a difference in the generation/calculation, which makes load balancing easier among others. <br/>
-The **application can't run** without the config files set properly in *config/autoload/*. A *.dist version is supplied for each, with the required structure. Remove the .**dist** and fill the values accordingly.<br/>
-**Error/logs generated** by the application are stored in **data/log/** folder with *date-LOG-NAME.log*. 
-**Error handling** is managed on two levels, with listener attached to render events which can handle all errors happening within the framework. The second layer is catching the language level errors where recovery is not possible. With this in place a controlled response can be generated even if errors occurs.
-
+ - **PUT/POST/GET/HEAD** HTTP methods are available on some endpoints.<br/>
+ - **Hmac digest** is calculated on the payload, which is either the body of the request or the path if body is not available(GET|HEAD). The path is only used to make scaling on multiple hosts easier, so the subdomain or different IP does not make a difference in the generation/calculation, which makes load balancing easier among others. <br/> 
+ - The **application can't run** without the config files set properly in *config/autoload/*. A *.dist version is supplied for each, with the required structure. Remove the .**dist** and fill the values accordingly.<br/>
+ - **Error/logs generated** by the application are stored in **data/log/** folder with *date-LOG-NAME.log*. <br/>
+ - **Error handling** is managed on two levels, with listener attached to render events which can handle all errors happening within the framework. The second layer is catching the language level errors where recovery is not possible. With this in place a controlled response can be generated even if errors occurs.
 
 ##Known issues
 The zipped content after extraction contains binary not html.<br/>
