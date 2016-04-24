@@ -147,7 +147,7 @@ Response
         "seconds": 1461435189,
         "microseconds": 403000
       },
-      "startin_params": "site-root:http://www.gmit.ie,start-at-page:http://http://www.gmit.ie/international/science-without-borders",
+      "startin_params": "site-root:http://www.gmit.ie,start-at-page:http://www.gmit.ie/international/science-without-borders",
       "status": "READY",
       "user_id": "350b2bfcc9129e5b3aa49165cb373c2f",
       "gmt": "Sat, 23 Apr 2016 17:13:09 GMT+0000"
@@ -157,6 +157,16 @@ Response
 ```
 Note: the response holds details about job, results for the job are available trough different endpoints.
  
+###Error response example
+If something goes wrong either within the application or by user error(wrong parameters/security issues etc.) a response in the following structure is returned with error message related to the issue.
+```Json
+{
+  "success": false,
+  "data": false,
+  "errors": "Request authorization failed, check keys/payload"
+}
+```
+Note: the status code is set based on the error in the above case '403 - Forbidden'
 
 Notes
 -----

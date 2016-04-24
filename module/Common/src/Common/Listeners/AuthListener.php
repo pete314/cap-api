@@ -109,9 +109,9 @@ class AuthListener extends AbstractListenerAggregate {
             'Date' => gmdate('D, d M Y H:i:s T'),
             'Content-Type' => 'application/json; charset=UTF-8'
         ]);
-        $response->setContent(\Zend\Json\Json::encode(['success' => false, 'data' => false, 'errors' => 'Request quthorization failed, check keys/payload']));
+        $response->setContent(\Zend\Json\Json::encode(['success' => false, 'data' => false, 'errors' => 'Request authorization failed, check keys/payload']));
         $response->getHeaders()->addHeaderLine('Content-Type', 'application/json');
-        $response->setStatusCode(405);
+        $response->setStatusCode(403);
     }
 
     /**
