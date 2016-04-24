@@ -13,7 +13,7 @@ Cap crawler is a simple python crawler with multi threaded execution and shared 
  - Chained validation(Auth<>identity<>endpoint<>request etc.)<br>
  - Json/Csv/zip response options<br>
  - Stateless & scalable
- - Custom error listener
+ - Custom error handling
 
 ----------
 
@@ -29,10 +29,6 @@ Modules can be installed separately, for more details visit the [official Zend d
 
 I suggest to use Opcache for better performance or use the [ClassMapAutoloader feature provided by Zend.](http://framework.zend.com/manual/current/en/modules/zend.loader.class-map-autoloader.html)
 
-#####Modules:
-**Common**: holds core functions, classes used by other modules like Adapters, Listeners etc.
-**User**: User based functions and endpoints
-**Crawl**: Wrapper around the crawling jobs
 
 ###Database
 The project uses Cassandra as the default database. There are few different packages available, but I used the [Datastax PHP driver](https://github.com/datastax/php-driver) , the documentation is available [here](http://datastax.github.io/php-driver/).
@@ -85,6 +81,11 @@ create table crawl_job (job_id varchar primary key, user_id varchar, status varc
 create index on CapData.crawl_job (user_id);
 ```
 
+###Available Modules:
+**Common**: holds core functions, classes used by other modules like Adapters, Listeners etc.<br>
+**User**: User based functions and endpoints<br>
+**Crawl**: Wrapper around the crawling jobs<br>
+
 
 **Endpoint usage examples**
 --- 
@@ -121,7 +122,6 @@ Response
 {
   "success": true,
   "data": {
-    {
       "job_id": "77cec83335e1bc59697de6a837256395a479422546b1e8451461431589",
       "created": {
         "type": {
@@ -151,7 +151,6 @@ Response
       "status": "READY",
       "user_id": "350b2bfcc9129e5b3aa49165cb373c2f",
       "gmt": "Sat, 23 Apr 2016 17:13:09 GMT+0000"
-    }
   },
   "errors": null
 }
