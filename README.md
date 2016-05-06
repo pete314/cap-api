@@ -45,10 +45,10 @@ sudo apt-get install libc6
 sudo apt-get -f install
 sudo apt-get update
 cd /tmp
-sudo curl http://downloads.datastax.com/cpp-driver/ubuntu/14.04/libuv_1.7.5-1_amd64.deb > libuv_1.7.5-1_amd64.deb
-sudo curl http://downloads.datastax.com/cpp-driver/ubuntu/14.04/libuv-dev_1.7.5-1_amd64.deb > libuv-dev_1.7.5-1_amd64.deb
-sudo curl http://downloads.datastax.com/cpp-driver/ubuntu/14.04/cassandra-cpp-driver-dev_2.3.0-1_amd64.deb > cassandra-cpp-driver-dev_2.3.0-1_amd64.deb	
-sudo curl http://downloads.datastax.com/cpp-driver/ubuntu/14.04/cassandra-cpp-driver_2.3.0-1_amd64.deb > cassandra-cpp-driver_2.3.0-1_amd64.deb
+sudo curl https://downloads.datastax.com/cpp-driver/ubuntu/14.04/dependencies/libuv/v1.7.5/libuv_1.7.5-1_amd64.deb > libuv_1.7.5-1_amd64.deb
+sudo curl https://downloads.datastax.com/cpp-driver/ubuntu/14.04/dependencies/libuv/v1.7.5/libuv-dev_1.7.5-1_amd64.deb > libuv-dev_1.7.5-1_amd64.deb 
+sudo curl http://downloads.datastax.com/cpp-driver/ubuntu/14.04/v2.3.0/cassandra-cpp-driver-dev_2.3.0-1_amd64.deb > cassandra-cpp-driver-dev_2.3.0-1_amd64.deb
+sudo curl http://downloads.datastax.com/cpp-driver/ubuntu/14.04/v2.3.0/cassandra-cpp-driver_2.3.0-1_amd64.deb > cassandra-cpp-driver_2.3.0-1_amd64.deb
 sudo dpkg -i libuv_1.7.5-1_amd64.deb
 sudo dpkg -i libuv-dev_1.7.5-1_amd64.deb
 sudo dpkg -i cassandra-cpp-driver_2.3.0-1_amd64.deb
